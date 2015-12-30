@@ -11,11 +11,13 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -35,20 +37,27 @@ public class HttpClientUtils {
 
 	static {
 		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
-		SocketConfig socketConfig = SocketConfig.custom().setTcpNoDelay(true).build();
+		SocketConfig socketConfig = SocketConfig.custom().setTcpNoDelay(true)
+				.build();
 		connManager.setDefaultSocketConfig(socketConfig);
 		connManager.setMaxTotal(HTTP_MAX_TOTAL);
 		connManager.setDefaultMaxPerRoute(HTTP_MAX_PERROUTE);
 
-		defaultRequestConfig = RequestConfig.custom().setSocketTimeout(HTTP_TIMEOUT)	.setConnectTimeout(HTTP_CON_TIMEOUT).setConnectionRequestTimeout(HTTP_CON_REQ_TIMEOUT).build();
-		httpClient = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(defaultRequestConfig).build();
+		defaultRequestConfig = RequestConfig.custom()
+				.setSocketTimeout(HTTP_TIMEOUT)
+				.setConnectTimeout(HTTP_CON_TIMEOUT)
+				.setConnectionRequestTimeout(HTTP_CON_REQ_TIMEOUT).build();
+		httpClient = HttpClients.custom().setConnectionManager(connManager)
+				.setDefaultRequestConfig(defaultRequestConfig).build();
 	}
 
-	public static String get(String baseUrl, Map<String, Object> params, int timeout) throws Exception {
+	public static String get(String baseUrl, Map<String, Object> params,
+			int timeout) throws Exception {
 		return get(baseUrl, params, timeout, null);
 	}
 
-	public static String get(String baseUrl, Map<String, Object> params, int timeout, String encoding) throws Exception {
+	public static String get(String baseUrl, Map<String, Object> params,
+			int timeout, String encoding) throws Exception {
 		String url = genUrl(params, baseUrl, encoding);
 		return get(url, timeout);
 	}
@@ -63,7 +72,8 @@ public class HttpClientUtils {
 			if (timeout < 0) {
 				return "";
 			}
-			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).build();
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setSocketTimeout(timeout).build();
 			httpget.setConfig(requestConfig);
 			CloseableHttpResponse response = httpClient.execute(httpget);
 			HttpEntity entity = response.getEntity();
@@ -72,18 +82,54 @@ public class HttpClientUtils {
 			EntityUtils.consume(entity);
 
 			if (logger.isInfoEnabled()) {
-				logger.info(httpget.getURI().toString() + " time used:" + (System.currentTimeMillis() - st));
+				logger.info(httpget.getURI().toString() + " time used:"
+						+ (System.currentTimeMillis() - st));
 			}
 
-			SystemDebugPoint.debugPoint(httpget.getURI().toString() + " response: " + rt + " time used:" + (System.currentTimeMillis() - st));
 			return rt;
 		} catch (Exception e) {
 			logger.error("http error.url:" + httpget.getURI().toString(), e);
 			throw e;
 		}
 	}
-	
-	
+
+	public static String post(HttpPost httpPost, int timeout) throws Exception {
+		try {
+			long st = System.currentTimeMillis();
+			if (timeout < 0) {
+				return "";
+			}
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setSocketTimeout(timeout).build();
+			httpPost.setConfig(requestConfig);
+			CloseableHttpResponse response = httpClient.execute(httpPost);
+			HttpEntity entity = response.getEntity();
+
+			String rt = EntityUtils.toString(entity, DEF_CHARSET);
+			EntityUtils.consume(entity);
+
+			if (logger.isInfoEnabled()) {
+				logger.info(httpPost.getURI().toString() + " time used:"
+						+ (System.currentTimeMillis() - st));
+			}
+
+			return rt;
+		} catch (Exception e) {
+			logger.error("http error.url:" + httpPost.getURI().toString(), e);
+			throw e;
+		}
+	}
+
+	public static String post(String url, int timeout) throws Exception {
+		try {
+			HttpPost httpPost = new HttpPost(url);
+			String rt = post(httpPost, timeout);
+			return rt;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	public static String get(String url, int timeout) throws Exception {
 		try {
 			long st = System.currentTimeMillis();
@@ -92,7 +138,9 @@ public class HttpClientUtils {
 			}
 
 			HttpGet httpget = new HttpGet(url);
-			RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig).setSocketTimeout(timeout).build();
+			RequestConfig requestConfig = RequestConfig
+					.copy(defaultRequestConfig).setSocketTimeout(timeout)
+					.build();
 			httpget.setConfig(requestConfig);
 			CloseableHttpResponse response = httpClient.execute(httpget);
 			HttpEntity entity = response.getEntity();
@@ -101,10 +149,10 @@ public class HttpClientUtils {
 			EntityUtils.consume(entity);
 
 			if (logger.isInfoEnabled()) {
-				logger.info(url + " time used:" + (System.currentTimeMillis() - st));
+				logger.info(url + " time used:"
+						+ (System.currentTimeMillis() - st));
 			}
 
-			SystemDebugPoint.debugPoint(url + " response: " + rt + " time used:" + (System.currentTimeMillis() - st));
 			return rt;
 		} catch (Exception e) {
 			logger.error("http error.url:" + url, e);
@@ -119,7 +167,9 @@ public class HttpClientUtils {
 				return null;
 			}
 			HttpGet httpget = new HttpGet(url);
-			RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig).setSocketTimeout(timeout).build();
+			RequestConfig requestConfig = RequestConfig
+					.copy(defaultRequestConfig).setSocketTimeout(timeout)
+					.build();
 			httpget.setConfig(requestConfig);
 			CloseableHttpResponse response = httpClient.execute(httpget);
 			HttpEntity entity = response.getEntity();
@@ -128,10 +178,10 @@ public class HttpClientUtils {
 			EntityUtils.consume(entity);
 
 			if (logger.isInfoEnabled()) {
-				logger.info(url + " time used:" + (System.currentTimeMillis() - st));
+				logger.info(url + " time used:"
+						+ (System.currentTimeMillis() - st));
 			}
 
-			SystemDebugPoint.debugPoint(url + " time used:" + (System.currentTimeMillis() - st));
 			return rt;
 		} catch (Exception e) {
 			logger.error("http error.url:" + url, e);
@@ -139,8 +189,8 @@ public class HttpClientUtils {
 		}
 	}
 
-	public static byte[] getBytes(String baseUrl, Map<String, Object> params, int timeout, String encoding)
-			throws Exception {
+	public static byte[] getBytes(String baseUrl, Map<String, Object> params,
+			int timeout, String encoding) throws Exception {
 		String url = genUrl(params, baseUrl, encoding);
 		return getBytes(url, timeout);
 	}
@@ -168,27 +218,32 @@ public class HttpClientUtils {
 		}
 	}
 
-	public static String genUrl(Map<String, Object> params, String baseUrl, final String encoding) {
+	public static String genUrl(Map<String, Object> params, String baseUrl,
+			final String encoding) {
 		StringBuilder url = new StringBuilder(baseUrl);
 		url.append("?");
 		url.append(Joiner.on("&").join(
-				Maps.transformEntries(params, new Maps.EntryTransformer<String, Object, String>() {
-					@Override
-					public String transformEntry(String key, Object value) {
-						if (key == null) {
-							return "";
-						}
-						if (value == null) {
-							return key + "=";
-						}
-						return key + "=" + encode(value.toString(), encoding);
-					}
+				Maps.transformEntries(params,
+						new Maps.EntryTransformer<String, Object, String>() {
+							@Override
+							public String transformEntry(String key,
+									Object value) {
+								if (key == null) {
+									return "";
+								}
+								if (value == null) {
+									return key + "=";
+								}
+								return key + "="
+										+ encode(value.toString(), encoding);
+							}
 
-				}).values()));
+						}).values()));
 		return url.toString();
 	}
 
-	private static Map<String, String> splitUrlParams(String urlParams, String decodeCoding) {
+	private static Map<String, String> splitUrlParams(String urlParams,
+			String decodeCoding) {
 		Map<String, String> urlParamsMap = new HashMap<String, String>();
 		if (urlParams != null) {
 			for (String str : Splitter.on('&').split(urlParams)) {
@@ -196,7 +251,8 @@ public class HttpClientUtils {
 				if (kv != null && kv.length == 2) {
 					if (StringUtils.isNotBlank(decodeCoding)) {
 						try {
-							urlParamsMap.put(kv[0], URLDecoder.decode(kv[1], decodeCoding));
+							urlParamsMap.put(kv[0],
+									URLDecoder.decode(kv[1], decodeCoding));
 						} catch (UnsupportedEncodingException e) {
 							logger.error("", e);
 						}
