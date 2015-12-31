@@ -1,4 +1,4 @@
-package com.alimama.ad.ssp.task.controller;
+package com.ecom.controller;
 
 import java.net.URLEncoder;
 
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alimama.ad.ssp.task.common.HttpClientUtils;
-import com.alimama.ad.ssp.task.dto.JDUser;
+import com.ecom.common.HttpClientUtils;
+import com.ecom.dto.JDUser;
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
 import com.jd.open.api.sdk.request.category.CategorySearchRequest;

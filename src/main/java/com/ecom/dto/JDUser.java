@@ -1,4 +1,4 @@
-package com.alimama.ad.ssp.task.dto;
+package com.ecom.dto;
 
 public class JDUser {
 	private String AccessToken;

@@ -1,4 +1,4 @@
-package com.alimama.ad.ssp.task.service;
+package com.ecom.service;
 
 public interface IPrmDataSyncService {
 

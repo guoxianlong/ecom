@@ -1,4 +1,4 @@
-package com.alimama.ad.ssp.task.controller;
+package com.ecom.controller;
 
 import javax.servlet.http.HttpServletRequest;
 

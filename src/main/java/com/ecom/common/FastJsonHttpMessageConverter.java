@@ -1,4 +1,4 @@
-package com.alimama.ad.ssp.task.common;
+package com.ecom.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
