@@ -1,13 +1,142 @@
-<html>
-<head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../../favicon.ico">
 
-<script>
-</script>
-</head>
-<body>
-hello!!
-<a href="https://oauth.jd.com/oauth/authorize?response_type=code&client_id=EE385CC63E0983D9F2EE4FF79750D633&
-redirect_uri=http%3a%2f%2fwww.test.com%3a8080%2fapi%2fauth&state=abc"> auth </a>
-</body>
+		<title>ecom</title>
 
-<html>
+		<!-- Bootstrap core CSS -->
+		<link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="/css/dashboard.css" rel="stylesheet">
+		<link href="/js/jqgrid/ui.jqgrid-bootstrap.css" rel="stylesheet" />
+		<link href="js/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+      	<script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      	<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    	<![endif]-->
+		<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+		<script src="js/jqgrid/jquery.jqGrid.min.js"></script>
+		<script src="js/jqgrid/i18n/grid.locale-en.js"></script>
+		<script src="js/jquery-ui/jquery-ui.min.js"></script>
+		<script>
+			$.jgrid.defaults.width = 780;
+			$.jgrid.defaults.responsive = true;
+			$.jgrid.defaults.styleUI = 'Bootstrap';
+			var mydata = [
+		               { id: "1", invdate: "2007-10-01", cust: "xxx", name: "小米4", pl:"JD",note: "处理中", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "2", invdate: "2007-10-02", cust: "xxx", name: "P8", pl:"TB",note: "处理中", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "3", invdate: "2007-09-01", cust: "axxa", name: "小米4", pl:"JD",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" },
+		               { id: "4", invdate: "2007-10-04", cust: "axxa", name: "小米4", pl:"TB",note: "发货中", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "5", invdate: "2007-10-05", cust: "axxa", name: "小米note", pl:"TB",note: "完成", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "6", invdate: "2007-09-06", cust: "axxa", name: "IPhone 6", pl:"JD",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" },
+		               { id: "7", invdate: "2007-10-04", cust: "axxa", name: "IPhone 6", pl:"JD",note: "完成", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "8", invdate: "2007-10-03", cust: "xxx", name: "IPhone 6", pl:"TB",note: "完成", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "9", invdate: "2007-09-01", cust: "xxx", name: "IPhone 6 套餐(一)", pl:"TB",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" }
+		        ];
+		
+		    
+		        $(document).ready(function () {
+		            $("#jqGrid").jqGrid({
+		                datatype: "local",
+						data: mydata,
+		                height: 400,
+		                width: 1000,
+						rowNum: 30,
+		                colModel: [
+		                    { label: '订单ID', name: 'id', width: 50, key:true },
+		                    { label: '平台', name: 'pl', width: 50 },
+		                    { label: '买家', name: 'cust', width: 100 },
+		                    { label: '产品', name: 'name', width: 100 },
+		                    { label: '成交时间', name: 'invdate', width: 90 },
+		                    { label: '状态', name: 'note', width: 80 },
+		                    { label: '金额', name: 'amount', width: 80 },
+		                    { label: '运费', name: 'tax', width: 80 },
+		                    { label: '合计', name: 'total', width: 80 }
+		                    
+		                ],
+		                viewrecords: true,
+		                caption: "",
+		                pager: "#jqGridPager"
+		            });
+		            
+		            $("#dialog" ).dialog({
+		            	autoOpen: false,
+		            	width: 500,
+		            	height: 500
+		            });
+		            $('#btn_bind').click(function(){
+		            	$( "#dialog" ).dialog( "open" );
+		            });
+		        });
+		</script>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">ecom</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a id="btn_bind" href="#">绑定帐号</a></li>
+						<li><a href="#">Help</a></li>
+					</ul>
+					<form class="navbar-form navbar-right">
+						<input type="text" class="form-control" placeholder="Search...">
+					</form>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li class="active"><a href="#">订单管理 <span class="sr-only">(current)</span></a></li>
+						<li><a href="#">订单</a></li>
+					</ul>
+				</div>
+
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h1 class="page-header">订单</h1>
+					<form class="form-inline">
+						<div class="form-group">
+							<label for="exampleInputName2">订单ID</label>
+							<input type="text" class="form-control" id="orderID" placeholder="order ID">
+						</div>
+
+						<button type="submit" class="btn btn-default">搜索</button>
+					</form>
+
+					<h2 class="sub-header"></h2>
+					<div class="table-responsive">
+						<table id="jqGrid"></table>
+						<div id="jqGridPager"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="dialog" title="平台账户绑定">
+			<iframe id="ifr_bind" src="/auth.html" width="400" height="550" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes">
+			</iframe>
+		</div>
+	</body>
+</html>
