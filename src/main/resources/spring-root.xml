@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd ">
 
-	<context:component-scan base-package="com.alimama.ad" />
+	<context:component-scan base-package="com.ecom" />
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<ref bean="fastJsonHttpMessageConverter" />
@@ -29,7 +29,7 @@
 		</property>
 	</bean>
 	<bean id="fastJsonHttpMessageConverter"
-		class="com.alimama.ad.ssp.task.common.FastJsonHttpMessageConverter">
+		class="com.ecom.common.FastJsonHttpMessageConverter">
 		<property name="supportedMediaTypes">
 			<list>
 				<value>application/json;charset=UTF-8</value>

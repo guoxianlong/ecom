@@ -30,7 +30,7 @@
 
 	<!-- Root Logger -->
 	<root>
-		<level value="warn" />
+		<level value="debug" />
 		<appender-ref ref="myConsole" />
 		<appender-ref ref="fileAppender" />
 	</root>

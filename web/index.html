@@ -29,6 +29,7 @@
 		<script src="js/jqgrid/jquery.jqGrid.min.js"></script>
 		<script src="js/jqgrid/i18n/grid.locale-en.js"></script>
 		<script src="js/jquery-ui/jquery-ui.min.js"></script>
+		<script src="js/common.js"></script>
 		<script>
 			$.jgrid.defaults.width = 780;
 			$.jgrid.defaults.responsive = true;
@@ -48,21 +49,22 @@
 		    
 		        $(document).ready(function () {
 		            $("#jqGrid").jqGrid({
-		                datatype: "local",
-						data: mydata,
+		                //datatype: "local",
+						//data: mydata,
+						datatype: find,
 		                height: 400,
 		                width: 1000,
 						rowNum: 30,
 		                colModel: [
 		                    { label: '订单ID', name: 'id', width: 50, key:true },
 		                    { label: '平台', name: 'pl', width: 50 },
-		                    { label: '买家', name: 'cust', width: 100 },
-		                    { label: '产品', name: 'name', width: 100 },
-		                    { label: '成交时间', name: 'invdate', width: 90 },
-		                    { label: '状态', name: 'note', width: 80 },
-		                    { label: '金额', name: 'amount', width: 80 },
-		                    { label: '运费', name: 'tax', width: 80 },
-		                    { label: '合计', name: 'total', width: 80 }
+		                    { label: '买家', name: 'pin', width: 100 },
+		                    { label: '产品', name: 'itemName', width: 100 },
+		                    { label: '成交时间', name: 'startTime', width: 90 },
+		                    { label: '状态', name: 'state', width: 80 },
+		                    { label: '金额', name: 'sellerPrice', width: 80 },
+		                    { label: '运费', name: 'freightPrice', width: 80 },
+		                    { label: '合计', name: 'totalPrice', width: 80 }
 		                    
 		                ],
 		                viewrecords: true,
@@ -79,6 +81,17 @@
 		            	$( "#dialog" ).dialog( "open" );
 		            });
 		        });
+		        
+		        function find(param){
+		        	post("/api/order/find.htm",param,function(rt){
+						//alert(rt.length);
+						var data = rt.data;
+						$.each(data,function(i,d){
+							d.itemName = d.items[0].skuName;
+						});
+						jQuery("#jqGrid")[0].addJSONData(data);
+					});
+		        }
 		</script>
 	</head>
 	<body>
