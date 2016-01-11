@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecom.dao.OrdersDAO">
+	<insert id="add" parameterType="com.ecom.domain.OrdersDO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `ecom`.`orders`
+		(`outer_id`,
+		`platform`,
+		`seller_id`,
+		`cust`,
+		`pay_type`,
+		`total_price`,
+		`seller_price`,
+		`payment`,
+		`freight_price`,
+		`seller_discount`,
+		`state`,
+		`delivery_type`,
+		`invoice_info`,
+		`remark`,
+		`cons_name`,
+		`cons_tel`,
+		`cons_mob`,
+		`cons_addr`,
+		`cons_province`,
+		`cons_city`,
+		`cons_county`,
+		`waybill`,
+		`logistics_id`,
+		`return_order`,
+		`created_time`,
+		`modified_time`,
+		`payment_confirm_time`,
+		`end_time`,
+		`sync_time`)
+		VALUES
+		(
+		#{outerId},
+		#{platform},
+		#{sellerId},
+		#{cust},
+		#{payType},
+		#{totalPrice},
+		#{sellerPrice},
+		#{payment},
+		#{freightPrice},
+		#{sellerDiscount},
+		#{state},
+		#{deliveryType},
+		#{invoiceInfo},
+		#{remark},
+		#{consName},
+		#{consTel},
+		#{consMob},
+		#{consAddr},
+		#{consProvince},
+		#{consCity},
+		#{consCounty},
+		#{waybill},
+		#{logisticsId},
+		#{returnOrder},
+		#{createdTime},
+		#{modifiedTime},
+		#{paymentConfirmTime},
+		#{endTime},
+		SYSDATE());
+		
+	</insert>
+</mapper>

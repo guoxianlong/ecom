@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../../favicon.ico">
+
+		<title>ecom</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="/css/dashboard.css" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+      	<script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      	<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    	<![endif]-->
+		<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script src="js/common.js"></script>
+		<script>
+			$.jgrid.defaults.width = 780;
+			$.jgrid.defaults.responsive = true;
+			$.jgrid.defaults.styleUI = 'Bootstrap';
+			var mydata = [
+		               { id: "1", invdate: "2007-10-01", cust: "xxx", name: "小米4", pl:"JD",note: "处理中", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "2", invdate: "2007-10-02", cust: "xxx", name: "P8", pl:"TB",note: "处理中", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "3", invdate: "2007-09-01", cust: "axxa", name: "小米4", pl:"JD",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" },
+		               { id: "4", invdate: "2007-10-04", cust: "axxa", name: "小米4", pl:"TB",note: "发货中", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "5", invdate: "2007-10-05", cust: "axxa", name: "小米note", pl:"TB",note: "完成", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "6", invdate: "2007-09-06", cust: "axxa", name: "IPhone 6", pl:"JD",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" },
+		               { id: "7", invdate: "2007-10-04", cust: "axxa", name: "IPhone 6", pl:"JD",note: "完成", amount: "200.00", tax: "10.00", total: "210.00" },
+		               { id: "8", invdate: "2007-10-03", cust: "xxx", name: "IPhone 6", pl:"TB",note: "完成", amount: "300.00", tax: "20.00", total: "320.00" },
+		               { id: "9", invdate: "2007-09-01", cust: "xxx", name: "IPhone 6 套餐(一)", pl:"TB",note: "完成", amount: "400.00", tax: "30.00", total: "430.00" }
+		        ];
+		
+		    
+		        $(document).ready(function () {
+		            $("#jqGrid").jqGrid({
+		                //datatype: "local",
+						//data: mydata,
+						datatype: find,
+		                height: 400,
+		                width: 1000,
+						rowNum: 30,
+		                colModel: [
+		                    { label: '订单ID', name: 'id', width: 50, key:true },
+		                    { label: '平台', name: 'pl', width: 50 },
+		                    { label: '买家', name: 'pin', width: 100 },
+		                    { label: '产品', name: 'itemName', width: 100 },
+		                    { label: '成交时间', name: 'startTime', width: 90 },
+		                    { label: '状态', name: 'state', width: 80 },
+		                    { label: '金额', name: 'sellerPrice', width: 80 },
+		                    { label: '运费', name: 'freightPrice', width: 80 },
+		                    { label: '合计', name: 'totalPrice', width: 80 }
+		                    
+		                ],
+		                viewrecords: true,
+		                caption: "",
+		                pager: "#jqGridPager"
+		            });
+		            
+		            $("#dialog" ).dialog({
+		            	autoOpen: false,
+		            	width: 500,
+		            	height: 500
+		            });
+		            $('#btn_bind').click(function(){
+		            	$( "#dialog" ).dialog( "open" );
+		            });
+		        });
+		        
+		        function find(param){
+		        	post("/api/order/find.htm",param,function(rt){
+						//alert(rt.length);
+						var data = rt.data;
+						$.each(data,function(i,d){
+							d.itemName = d.items[0].skuName;
+						});
+						jQuery("#jqGrid")[0].addJSONData(data);
+					});
+		        }
+		</script>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">ecom</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a id="btn_bind" href="#">绑定帐号</a></li>
+						<li><a href="#">Help</a></li>
+					</ul>
+					<form class="navbar-form navbar-right">
+						<input type="text" class="form-control" placeholder="Search...">
+					</form>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li class="active"><a href="#">订单管理 <span class="sr-only">(current)</span></a></li>
+						<li><a href="#">订单</a></li>
+					</ul>
+				</div>
+
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h2 class="page-header">订单</h2>
+					<form class="form-inline">
+						<div class="form-group">
+							<label for="exampleInputName2">订单ID</label>
+							<input type="text" class="form-control" id="orderID" placeholder="order ID">
+						</div>
+						<div class="form-group">
+							<label for="exampleInputName2">平台</label>
+							<select class="form-control">
+							  <option>京东</option>
+							  <option>淘宝</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-default">搜索</button>
+					</form>
+
+					<h2 class="sub-header"></h2>
+					<div class="row" style="padding-top: 10px; padding-bottom: 10px; background-color: rgba(86,61,124,.15);">
+						<div class="col-md-4">商品</div>
+						<div class="col-md-2">单价</div>
+						<div class="col-md-1">数量</div>
+						<div class="col-md-2">实付款(元)</div>
+						<div class="col-md-2">状态</div>
+						<div class="col-md-1">平台</div>
+					</div>
+					
+					<div class="row" style="border:1px solid;border-color:rgba(86,61,124,.15);margin-top: 10px;">
+						<div class="col-md-12" >
+							<div class="row" style=" padding-top: 5px; padding-bottom: 5px; background-color: rgba(86,61,124,.15);">
+								<div class="col-md-4">
+									<input type="checkbox" />
+									2015-01-10 15:20 订单号: 1000
+								</div>
+								<div class="col-md-2">xxx</div>
+								<div class="col-md-1">2</div>
+								<div class="col-md-2">200.00</div>
+								<div class="col-md-2">等待出货</div>
+								<div class="col-md-1">京东</div>
+							</div>
+							<div class="row" style="padding-top: 5px; padding-bottom: 5px; ">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<img src="https://img.alicdn.com/bao/uploaded/i2/TB1nC_QGFXXXXaSXpXXXXXXXXXX_!!0-item_pic.jpg_80x80.jpg" />
+										</div>
+										<div class="col-md-8">
+											黑钻水草泥鱼缸水族箱造景底砂含基肥料非ADA亚马逊尼特利陶粒沙
+										</div>
+									</div>
+									
+								</div>
+								<div class="col-md-2">100.00</div>
+								<div class="col-md-1">1</div>
+								<div class="col-md-2"></div>
+								<div class="col-md-2"></div>
+								<div class="col-md-1"></div>
+							</div>
+							<div class="row" style="padding-top: 5px; padding-bottom: 5px; ">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<img src="https://img.alicdn.com/bao/uploaded/i2/TB1nC_QGFXXXXaSXpXXXXXXXXXX_!!0-item_pic.jpg_80x80.jpg" />
+										</div>
+										<div class="col-md-8">
+											黑钻水草泥鱼缸水族箱造景底砂含基肥料非ADA亚马逊尼特利陶粒沙
+										</div>
+									</div>
+									
+								</div>
+								<div class="col-md-2">100.00</div>
+								<div class="col-md-1">1</div>
+								<div class="col-md-2"></div>
+								<div class="col-md-2"></div>
+								<div class="col-md-1"></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row" style="border:1px solid;border-color:rgba(86,61,124,.15);margin-top: 10px;">
+						<div class="col-md-12" >
+							<div class="row" style="padding-top: 5px; padding-bottom: 5px; background-color: rgba(86,61,124,.15);">
+								<div class="col-md-4">
+									<input type="checkbox" />
+									2015-01-10 15:20 订单号: 1000
+								</div>
+								<div class="col-md-2">xxx</div>
+								<div class="col-md-1">1</div>
+								<div class="col-md-2">100.00</div>
+								<div class="col-md-2">完成</div>
+								<div class="col-md-1">京东</div>
+							</div>
+							<div class="row" style="padding-top: 5px; padding-bottom: 5px; ">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<img src="https://img.alicdn.com/bao/uploaded/i2/TB1nC_QGFXXXXaSXpXXXXXXXXXX_!!0-item_pic.jpg_80x80.jpg" />
+										</div>
+										<div class="col-md-8">
+											黑钻水草泥鱼缸水族箱造景底砂含基肥料非ADA亚马逊尼特利陶粒沙
+										</div>
+									</div>
+									
+								</div>
+								<div class="col-md-2">100.00</div>
+								<div class="col-md-1">1</div>
+								<div class="col-md-2"></div>
+								<div class="col-md-2"></div>
+								<div class="col-md-1"></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row" style="margin-top: 10px;">
+						<div class="col-md-12">
+							<span style="display: inline-block; width: 35px; height: 35px; line-height: 35px; font-weight: bold; border: 1px solid rgb(232, 232, 232); text-align: center; color: rgb(232, 232, 232);"><</span>
+							<span style="display: inline-block; width: 35px; height: 35px; line-height: 35px; font-weight: bold; border: 1px solid rgb(232, 232, 232); text-align: center; color: rgb(232, 232, 232);">1</span>
+							<span style="display: inline-block; width: 35px; height: 35px; line-height: 35px; font-weight: bold; border: 1px solid rgb(232, 232, 232); text-align: center; color: rgb(232, 232, 232);">2</span>
+							<span style="display: inline-block; width: 35px; height: 35px; line-height: 35px; font-weight: bold; border: 1px solid rgb(232, 232, 232); text-align: center; color: rgb(232, 232, 232);">></span>
+							共10页
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="dialog" title="平台账户绑定" style="display: none;">
+			<iframe id="ifr_bind" src="/auth.html" width="400" height="550" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes">
+			</iframe>
+		</div>
+	</body>
+</html>
