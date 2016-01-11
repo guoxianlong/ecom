@@ -1,18 +1,28 @@
 package com.ecom.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.ecom.common.Utils;
+import com.ecom.common.constant.JDOrderStateEnum;
 import com.ecom.dao.OrdersDAO;
 import com.ecom.domain.OrdersDO;
 import com.ecom.dto.ResultDTO;
+import com.jd.open.api.sdk.domain.order.OrderSearchInfo;
+import com.jd.open.api.sdk.request.order.OrderSearchRequest;
+import com.jd.open.api.sdk.response.order.OrderSearchResponse;
 
 @Controller
 @RequestMapping(value = "/api/jd/order")
@@ -25,45 +35,62 @@ public class JDOrderController extends BaseController{
     @ResponseBody
 	public ResultDTO sync(HttpServletRequest request){
 		try{
-			/*
 			OrderSearchRequest req = new OrderSearchRequest();
-			req.setOrderState("WAIT_GOODS_RECEIVE_CONFIRM");
+			String state = JDOrderStateEnum.WAIT_SELLER_STOCK_OUT.getStr() + ","
+					+ JDOrderStateEnum.WAIT_GOODS_RECEIVE_CONFIRM.getStr() + ","
+					+ JDOrderStateEnum.FINISHED.getStr() + ","
+					+ JDOrderStateEnum.TRADE_CANCELED.getStr() + ","
+					+ JDOrderStateEnum.TRADE_CANCELED.getStr() + ","
+					+ JDOrderStateEnum.LOCKED.getStr();
+			req.setOrderState(state);
 			req.setPage("1");
 			req.setPageSize("10");
-			req.setOptionalFields("pin,item_info_list,order_state,order_start_time,order_total_price,freight_price,order_seller_price");
+			
+			String[] fidlds = new String[]{
+					"order_id",
+					"vender_id",
+					"pay_type",
+					"pin",
+					"item_info_list",
+					"order_state",
+					"order_start_time",
+					"modified",
+					"order_total_price",
+					"freight_price",
+					"order_seller_price",
+					"order_payment",
+					"seller_discount"
+			};
+			req.setOptionalFields(StringUtils.join(fidlds, ','));
+			
+			DateTime startDT = new DateTime(2016, 1, 11, 0, 0, 0, 0);
+			DateTime endDT = new DateTime(2016, 1, 12, 0, 0, 0, 0);
+			req.setStartDate(startDT.toString("yyyy-MM-dd HH:mm:ss"));
+			req.setEndDate(endDT.toString("yyyy-MM-dd HH:mm:ss"));
 			OrderSearchResponse rs = this.getJdClient(request).execute(req);
 			
-			List<OrderDTO> orderList = Lists.newArrayList();
 			List<OrderSearchInfo> list = rs.getOrderInfoResult().getOrderInfoList();
-			for(OrderSearchInfo o : list){
-				OrderDTO order = new OrderDTO();
-				order.setId(Long.valueOf(o.getOrderId()));
-				order.setStartTime(o.getOrderStartTime());
-				order.setState(o.getOrderState());
-				order.setSellerPrice(o.getOrderSellerPrice());
-				order.setFreightPrice(o.getFreightPrice());
-				order.setTotalPrice(o.getOrderTotalPrice());
-				order.setPin(o.getPin());
-				
-				List<OrderItemDTO> items = Lists.newArrayList();
-				List<ItemInfo> arr = o.getItemInfoList();
-				for(ItemInfo it : arr){
-					OrderItemDTO item = new OrderItemDTO();
-					item.setSkuId(Long.valueOf(it.getSkuId()));
-					item.setSkuName(it.getSkuName());
-					item.setProdNo(it.getProductNo());
-					item.setPrice(it.getJdPrice());
-					item.setOuterSkuId(it.getOuterSkuId());
-					item.setItemId(Long.valueOf(it.getWareId()));
-					item.setGiftPoint(it.getGiftPoint());
-					item.setCount(Integer.valueOf(it.getItemTotal()));
-					items.add(item);
-				}
-				order.setItems(items);
-				orderList.add(order);
+			if(LOG.isDebugEnabled()){
+				LOG.debug(JSON.toJSONString(list));
 			}
-			return ResultDTO.createOKResult(orderList);
-			*/
+			for(OrderSearchInfo o : list){
+				OrdersDO order = new OrdersDO();
+				order.setPlatform(1);
+				order.setOuterId(Long.valueOf(o.getOrderId()));
+				order.setSellerId(Long.valueOf(o.getVenderId()));
+				order.setCust(o.getPin());
+				order.setPayType(payTypeParse(o.getPayType()));
+				order.setCreatedTime(dateParse(o.getOrderStartTime()));
+				order.setModifiedTime(dateParse(o.getModified()));
+				order.setState(JDOrderStateEnum.parse(o.getOrderState()).getCode());
+				order.setSellerPrice(Utils.yuanToFen(o.getOrderSellerPrice()));
+				order.setFreightPrice(Utils.yuanToFen(o.getFreightPrice()));
+				order.setTotalPrice(Utils.yuanToFen(o.getOrderTotalPrice()));
+				order.setPayment(Utils.yuanToFen(o.getOrderPayment()));
+				orderDAO.add(order);
+			}
+			return ResultDTO.createOKResult("ok");
+			/*
 			OrdersDO order = new OrdersDO();
 			order.setOuterId(100L);
 			order.setPlatform(1);
@@ -74,9 +101,22 @@ public class JDOrderController extends BaseController{
 			order.setModifiedTime(new Date());
 			orderDAO.add(order);
 			return ResultDTO.createOKResult("ok");
+			*/
 		}catch(Exception e){
 			LOG.error("sync order error.",e);
 		}
 		return ResultDTO.createFailResult("");
+	}
+	
+	private Date dateParse(String dt){
+		DateTime d = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime(dt);
+		return d.toDate();
+	}
+	
+	private int payTypeParse(String payType){
+		if(StringUtils.contains(payType, '-')){
+			return Integer.valueOf(StringUtils.split(payType, '-')[0]);
+		}
+		return -1;
 	}
 }
