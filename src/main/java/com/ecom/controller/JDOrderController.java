@@ -48,18 +48,32 @@ public class JDOrderController extends BaseController{
 			
 			String[] fidlds = new String[]{
 					"order_id",
+					"order_source",
 					"vender_id",
 					"pay_type",
-					"pin",
-					"item_info_list",
-					"order_state",
-					"order_start_time",
-					"modified",
 					"order_total_price",
-					"freight_price",
 					"order_seller_price",
 					"order_payment",
-					"seller_discount"
+					"freight_price",
+					"seller_discount",
+					"order_state",
+					"delivery_type",
+					"invoice_info",
+					"order_remark",
+					"order_start_time",
+					"order_end_time",
+					"modified",
+					"consignee_info",
+					"item_info_list",
+					"coupon_detail_list",
+					"vender_remark",
+					"payment_confirm_time",
+					"waybill",
+					"logistics_id",
+					"vat_invoice_info",
+					"pin",
+					"return_order",
+					"order_type"
 			};
 			req.setOptionalFields(StringUtils.join(fidlds, ','));
 			
@@ -87,7 +101,9 @@ public class JDOrderController extends BaseController{
 				order.setFreightPrice(Utils.yuanToFen(o.getFreightPrice()));
 				order.setTotalPrice(Utils.yuanToFen(o.getOrderTotalPrice()));
 				order.setPayment(Utils.yuanToFen(o.getOrderPayment()));
-				orderDAO.add(order);
+				long orderId = orderDAO.add(order);
+				
+				
 			}
 			return ResultDTO.createOKResult("ok");
 			/*
