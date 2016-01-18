@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ecom.dao.OrdersDAO">
+	<sql id="select">
+		SELECT `id`,
+		    `outer_id` as outerId,
+		    `platform` as platform,
+		    `seller_id` as sellerId,
+		    `cust` as cust,
+		    `pay_type` as payType,
+		    `total_price` as totalPrice,
+		    `seller_price` as sellerPrice,
+		    `payment` as payment,
+		    `freight_price` as freightPrice,
+		    `seller_discount` as sellerDiscount,
+		    `state` as state,
+		    `delivery_type` as deliveryType,
+		    `invoice_info` as invoiceInfo,
+		    `remark` as remark,
+		    `cons_name` as consName,
+		    `cons_tel` as consTel,
+		    `cons_mob` as consMob,
+		    `cons_addr` as consAddr,
+		    `cons_province` as consProvince,
+		    `cons_city` as consCity,
+		    `cons_county` as consCounty,
+		    `waybill` as waybill,
+		    `logistics_id` as logisticsId,
+		    `return_order` as returnOrder,
+		    `created_time` as createdTime,
+		    `modified_time` as modifiedTime,
+		    `payment_confirm_time` as paymentConfirm,
+		    `end_time` as endTime,
+		    `sync_time` as syncTime
+		FROM `orders`
+	</sql>
+	
+	<select id="find"  resultType="OrdersDO">
+	    <include refid="select"/>
+	    <![CDATA[
+	    where modified_time > #{st} and modified_time < #{et}
+	    ]]>
+	</select>
+	
+	<select id="get"  resultType="OrdersDO">
+	    <include refid="select"/>
+	    where id=#{orderId}
+	</select>
+	
 	<insert id="add" parameterType="com.ecom.domain.OrdersDO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `ecom`.`orders`
 		(`outer_id`,
@@ -63,6 +109,5 @@
 		#{paymentConfirmTime},
 		#{endTime},
 		SYSDATE());
-		
 	</insert>
 </mapper>

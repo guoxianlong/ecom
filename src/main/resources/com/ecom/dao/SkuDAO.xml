@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecom.dao.SkuDAO">
+	<sql id="sql">
+		SELECT `id`,
+		    `p_id` as pId,
+		    `p`,
+		    `item_id` as itemId,
+		    `shop_id` as shopId,
+		    `status`,
+		    `attr`,
+		    `price`,
+		    `cost_price` as costPrice,
+		    `market_price` as marketPrice,
+		    `stock_num` as stockNum,
+		    `created`,
+		    `modified`
+		FROM `sku`
+	</sql>
+	
+	<select id="findByIds"  resultType="SkuDO">
+	    <include refid="sql"/>
+	    where p_id in
+	    <foreach item="skuId" index="index" collection="skuIds" open="(" separator="," close=")">
+			#{skuId}
+		</foreach>
+	</select>
+	
+	<insert id="add"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `sku`
+			(
+		    `p_id`,
+		    `p`,
+		    `item_id`,
+		    `shop_id`,
+		    `status`,
+		    `attr`,
+		    `price`,
+		    `cost_price`,
+		    `market_price`,
+		    `stock_num`,
+		    `created`,
+		    `modified`)
+			VALUES
+			(
+			#{pId},
+			#{p},
+			#{itemId},
+			#{shopId},
+			#{status},
+			#{attr},
+			#{price},
+			#{costPrice},
+			#{marketPrice},
+			#{stockNum},
+			#{created},
+			#{modified});
+	</insert>
+</mapper>

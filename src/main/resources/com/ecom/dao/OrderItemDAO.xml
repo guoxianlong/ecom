@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecom.dao.OrderItemDAO">
+	<sql id="sql">
+		SELECT `id`,
+		    `order_id` as orderId,
+		    `sku_id` as skuId,
+		    `outer_sku_id` as outerSkuId,
+		    `sku_name` as skuName,
+		    `price`,
+		    `gift_point` as giftPoint,
+		    `item_id` as itemId,
+		    `count`,
+		    `prod_no` as prodNo,
+		    `created_time` createdTime,
+		    `modified_time` as modifiedTime
+		FROM `order_item`
+	</sql>
+	<select id="find"  resultType="OrderItemDO">
+	    <include refid="sql"/>
+	    <![CDATA[
+	    where order_id = #{orderId}
+	    ]]>
+	</select>
+	
+	<select id="findByOrderIds"  resultType="OrderItemDO">
+	    <include refid="sql"/>
+	    where order_id in
+	    <foreach item="orderId" index="index" collection="orderIds" open="(" separator="," close=")">
+			#{orderId}
+		</foreach>
+	</select>
+	
+	<insert id="add"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `order_item`
+			(
+			`order_id`,
+			`sku_id`,
+			`outer_sku_id`,
+			`sku_name`,
+			`price`,
+			`gift_point`,
+			`item_id`,
+			`count`,
+			`prod_no`,
+			`created_time`,
+			`modified_time`)
+			VALUES
+			(
+			#{orderId},
+			#{skuId},
+			#{outerSkuId},
+			#{skuName},
+			#{price},
+			#{giftPoint},
+			#{itemId},
+			#{count},
+			#{prodNo},
+			SYSDATE(),
+			SYSDATE());
+	</insert>
+</mapper>

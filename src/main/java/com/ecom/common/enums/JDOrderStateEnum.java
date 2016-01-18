@@ -1,4 +1,4 @@
-package com.ecom.common.constant;
+package com.ecom.common.enums;
 
 import org.apache.commons.lang.StringUtils;
 

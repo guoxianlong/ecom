@@ -15,7 +15,7 @@ public class OrdersDO {
 	private int freightPrice;
 	private int sellerDiscount;
 	private int state;
-	private String deliveryType;
+	private int deliveryType;
 	private String invoiceInfo;
 	private String remark;
 	private String consName;
@@ -104,10 +104,10 @@ public class OrdersDO {
 	public void setState(int state) {
 		this.state = state;
 	}
-	public String getDeliveryType() {
+	public int getDeliveryType() {
 		return deliveryType;
 	}
-	public void setDeliveryType(String deliveryType) {
+	public void setDeliveryType(int deliveryType) {
 		this.deliveryType = deliveryType;
 	}
 	public String getInvoiceInfo() {

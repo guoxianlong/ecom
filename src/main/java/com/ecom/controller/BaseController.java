@@ -1,7 +1,11 @@
 package com.ecom.controller;
 
+import java.util.Optional;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.jd.open.api.sdk.DefaultJdClient;
 import com.jd.open.api.sdk.JdClient;
@@ -22,9 +26,13 @@ public class BaseController {
 		return null;
 	}
 	
-	public JdClient getJdClient(HttpServletRequest request){
+	public Optional<JdClient> getJdClient(HttpServletRequest request){
+		String token = getAccessToken(request);
+		if(StringUtils.isBlank(token)){
+			return Optional.empty();
+		}
 		JdClient client = new DefaultJdClient(JD_HOST,getAccessToken(request),APP_KEY,APP_SECRET);
-		return client;
+		return Optional.of(client);
 	}
 	 
 }

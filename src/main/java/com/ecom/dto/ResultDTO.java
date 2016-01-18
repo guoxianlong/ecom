@@ -32,7 +32,7 @@ public class ResultDTO {
 	
 	public static ResultDTO createFailResult(String message){
 		ResultDTO r = new ResultDTO();
-		r.setCode(200);
+		r.setCode(500);
 		r.setMessage(message);
 		return r;
 	}
